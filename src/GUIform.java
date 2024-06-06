@@ -273,7 +273,7 @@ public class GUIform implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent a) {
-      if(e.getSource().equals(color)){
+      if(a.getSource().equals(color)){
             recolor();
         }
       
@@ -284,7 +284,7 @@ public class GUIform implements ActionListener {
             JOptionPane.showMessageDialog(frame, "Done", null, JOptionPane.PLAIN_MESSAGE);
         }
         if (a.getSource() == m3) {
-            this.export();
+            export();
         }
         if (a.getSource() == exportOK) {
             exportPatientMenu.setVisible(false);
@@ -312,11 +312,10 @@ public class GUIform implements ActionListener {
         2. Figure out sliderlisteners and make the RescaleOp for the sliders. (ChangeListener + ImageOp)
         3. Figure out how to populate said images. For next commit just add some random 3.
         */
-        JInternalFrame frmManualRecoloring = new JInternalFrame("Manual Image Recolor", true, true,true,true);
-       // frmManualRecoloring.setBounds(100, 100, 580, 460);
-        frame.getContentPane().add(frmManualRecoloring);
+        JFrame frmManualRecoloring = new JFrame("Manual Image Recolor");
+       frmManualRecoloring.setSize(600, 500);
         frmManualRecoloring.setTitle("Manual Recoloring");
-        frmManualRecoloring.setDefaultCloseOperation(JInternalFrame.EXIT_ON_CLOSE);
+        frmManualRecoloring.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frmManualRecoloring.getContentPane().setLayout(null);
 
         JButton save = new JButton("Save");
