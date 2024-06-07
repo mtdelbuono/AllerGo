@@ -10,9 +10,8 @@ import javax.swing.JOptionPane;
 
 public class GUIform implements ActionListener {
     // Declare global variables
-    JFrame frame, openPatientMenu;
+    JFrame frame, openPatientMenu, exportPatientMenu, dateMenu, newPatientMenu;
     JMenuItem m1, m2, m3;
-    JFrame exportPatientMenu, dateMenu, newPatientMenu;
     JButton exportOK, openOK, newPatientButton, loadOK, newPatientOK;
     JButton color;
     ChangeListener sliderListener;
@@ -131,10 +130,13 @@ public class GUIform implements ActionListener {
         return panel;
     }
 
-
+    // Method to make export pop up window, called when 'export' button is pressed
     public void export() {
+        // Make the frame
         exportPatientMenu = new JFrame("Export Patient");
         exportPatientMenu.setSize(500, 400);
+
+        // Create 'Name' text box
         JLabel exportName = new JLabel("Name: ");
         JTextField exportFileName = new JTextField(30);
         exportFileName.setEditable(true);
@@ -150,21 +152,28 @@ public class GUIform implements ActionListener {
         exportLocationPanel.add(exportLocation);
         exportLocationPanel.add(exportFileLocation);
 
+        // Export Button that exports the file
+
         exportOK = new JButton("Export");
         exportPatientMenu.add(exportOK, BorderLayout.AFTER_LAST_LINE);
         exportOK.addActionListener(this);
 
+
+        // Add components and set Visible
         exportPatientMenu.add(exportNamePanel, BorderLayout.NORTH);
         exportPatientMenu.add(exportLocationPanel, BorderLayout.CENTER);
-
-        // Set Visible
         exportPatientMenu.setVisible(true);
     }
 
+
+    // Method that generates the open pop up window, called when 'open' is pressed
     public void openPatient() {
+
         // Edit format + functionality once Patient class created/server added
         openPatientMenu = new JFrame("Open Patient");
         openPatientMenu.setSize(500, 400);
+
+        // Text fields for patient name and ID
 
         JLabel openName = new JLabel("Patient Name: ");
         JTextField openPatientName = new JTextField(30);
@@ -173,7 +182,6 @@ public class GUIform implements ActionListener {
         openNamePanel.add(openName);
         openNamePanel.add(openPatientName);
 
-        // Replace with file system
         JLabel openID = new JLabel("Patient ID: ");
         JTextField openPatientID = new JTextField(30);
         openPatientID.setEditable(true);
@@ -181,9 +189,11 @@ public class GUIform implements ActionListener {
         openIDPanel.add(openID);
         openIDPanel.add(openPatientID);
 
+        // Add text box components
         openPatientMenu.add(openNamePanel, BorderLayout.NORTH);
         openPatientMenu.add(openIDPanel, BorderLayout.CENTER);
 
+        // New patient or open existing patient buttons
         JPanel openPatientButtons = new JPanel();
 
         newPatientButton = new JButton("New Patient");
@@ -196,9 +206,12 @@ public class GUIform implements ActionListener {
 
         openPatientMenu.add(openPatientButtons, BorderLayout.SOUTH);
 
+        // Set the menu to be visible
         openPatientMenu.setVisible(true);
     }
 
+    // Method for creating pop up window that asks for the date and loads existing patient
+    // Method may be unnecessary -- do we need that pop up window?
     public void loadPatient() {
         openPatientMenu.setVisible(false);
 
@@ -221,11 +234,14 @@ public class GUIform implements ActionListener {
 
     }
 
+    // Method to generate pop up window to create a new patient
     public void newPatient() {
         openPatientMenu.setVisible(false);
 
         newPatientMenu = new JFrame();
         newPatientMenu.setSize(500, 400);
+
+        // Text boxes for patient name, id, dob, address
 
         JLabel patientName = new JLabel("Patient Name: ");
         JTextField nameField= new JTextField(30);
@@ -255,6 +271,7 @@ public class GUIform implements ActionListener {
         addressPanel.add(addressName);
         addressPanel.add(addressField);
 
+        // Add text boxes to frame
         JPanel panel = new JPanel();
         GridLayout layout = new GridLayout(4,0);
         panel.setLayout(layout);
@@ -263,6 +280,7 @@ public class GUIform implements ActionListener {
         panel.add(DOBPanel);
         panel.add(addressPanel);
 
+        // Button to create the new patient
         newPatientOK = new JButton("Create Patient");
         newPatientMenu.add(newPatientOK, BorderLayout.SOUTH);
         newPatientOK.addActionListener(this);
