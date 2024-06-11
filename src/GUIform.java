@@ -1,11 +1,13 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.*;
 import javax.swing.JOptionPane;
 
 /*2
@@ -15,8 +17,15 @@ import javax.swing.JOptionPane;
     2. Add function (action listener) to all buttons and elements
 
  */
+/*
+IMPORTANT INFO ABOUT THE PATIENT OBJECT
+SERVER/LOCAL WILL HAVE FOLDER: TXT file and 3 images titled 0, 48, 72.
+Scrape text file to openPatient (comment this out)
 
-public class GUIform implements ActionListener {
+
+Remove NewPatient.
+ */
+public class GUIform implements ActionListener{
     // Declare global variables
     JFrame frame, openPatientMenu, exportPatientMenu, dateMenu, newPatientMenu;
     JMenuItem m1, m2, m3;
@@ -25,14 +34,24 @@ public class GUIform implements ActionListener {
     ChangeListener sliderListener;
 
 
+    //temporary for testing
+    Patient pt = new Patient("test", "test", "000000" , "00/00/0000");
+
+
+
+
+
+
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+        try {
             GUIform GUI = new GUIform();
-        });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public GUIform() {
+    public GUIform() throws IOException {
         frame = new JFrame("Image Processing Tool");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 700);
@@ -54,12 +73,11 @@ public class GUIform implements ActionListener {
         color = new JButton("Color");
         color.addActionListener(this);
         JButton crop = new JButton("Crop");
-        JButton size = new JButton("Size");
+
         JButton patientInfo = new JButton("Patient Info");
 
         mb.add(color);
         mb.add(crop);
-        mb.add(size);
         mb.add(patientInfo);
 
         frame.setJMenuBar(mb);
@@ -100,12 +118,6 @@ public class GUIform implements ActionListener {
         panel3.add(panel3b, BorderLayout.SOUTH);
         imagePane.addTab("72hrs", panel3);
 
-        JPanel tabOpenPanel = new JPanel();
-        tabOpenPanel.setLayout(new GridBagLayout());
-        JButton tabOpen = new JButton("Open");
-        tabOpenPanel.add(tabOpen, new GridBagConstraints());
-        tabOpen.addActionListener(this);
-        imagePane.addTab("Open", tabOpenPanel);
 
         imagePane.setPreferredSize(new Dimension(450,450));
         frame.getContentPane().add(imagePane, BorderLayout.WEST);
@@ -176,7 +188,10 @@ public class GUIform implements ActionListener {
 
     // Method that generates the open pop up window, called when 'open' is pressed
     private void openPatient() {
-
+        /*
+        @Todo
+        Open the patient from server.
+         */
         // Edit format + functionality once Patient class created/server added
         openPatientMenu = new JFrame("Open Patient");
         openPatientMenu.setSize(500, 400);
@@ -220,7 +235,10 @@ public class GUIform implements ActionListener {
 
     // Method for creating pop up window that asks for the date and loads existing patient
     // Method may be unnecessary -- do we need that pop up window?
-    private void loadPatient() {
+    private void loadScans() {
+
+        //populate the dates of each scan on file into some dropdown.
+        //user can select which scan to load and it will load. --> ActionPerformed method.
         openPatientMenu.setVisible(false);
 
         dateMenu = new JFrame();
@@ -234,7 +252,7 @@ public class GUIform implements ActionListener {
 
         dateMenu.add(datePanel, BorderLayout.NORTH);
 
-        loadOK = new JButton("Open Patient");
+        loadOK = new JButton("Open Scans");
         dateMenu.add(loadOK, BorderLayout.SOUTH);
         loadOK.addActionListener(this);
 
@@ -272,7 +290,7 @@ public class GUIform implements ActionListener {
         DOBPanel.add(DOBName);
         DOBPanel.add(DOBField);
 
-        JLabel addressName = new JLabel("Patient Name: ");
+        JLabel addressName = new JLabel("Patient Address: ");
         JTextField addressField = new JTextField(30);
         addressField.setEditable(true);
         JPanel addressPanel = new JPanel();
@@ -300,7 +318,12 @@ public class GUIform implements ActionListener {
 
     public void actionPerformed(ActionEvent a) {
       if(a.getSource().equals(color)){
-            PopUp.recolor();
+          //pull the color.
+
+          //temporarily:
+
+          PopUp p = new PopUp(pt);
+          p.recolor();
         }
       
         if (a.getSource() == m1) {
@@ -317,7 +340,7 @@ public class GUIform implements ActionListener {
             JOptionPane.showMessageDialog(frame, "Done", null, JOptionPane.PLAIN_MESSAGE);
         }
         if (a.getSource() == openOK) {
-            loadPatient();
+            loadScans();
         }
         if (a.getSource() == loadOK) {
             dateMenu.setVisible(false);

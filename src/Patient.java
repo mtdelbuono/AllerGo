@@ -1,14 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Patient {
     // Global Variables (patient information)
 
     // All variables are strings for now
-    String patientName, patientAddress, patientID, patientDOB;
+    String patientName, patientAddress, patientID, patientDOB, chiefComplaint;
 
     // Images (not sure about the type)
-    Image imageBefore, image48hr, image72hr;
+    BufferedImage imageBefore, image48hr, image72hr;
 
     /*
         @Todo
@@ -19,15 +20,11 @@ public class Patient {
      */
 
     // Temporary method that allows us to create a patient object
-    public Patient(String patientName, String patientAddress, String patientID, String patientDOB, Image imageBefore, Image image48hr, Image image72hr) {
+    public Patient(String patientName, String patientAddress, String patientID, String patientDOB) {
         this.patientName = patientName;
         this.patientAddress = patientAddress;
         this.patientID = patientID;
         this.patientDOB = patientDOB;
-        this.imageBefore = imageBefore;
-        this.image48hr = image48hr;
-        this.image72hr = image72hr;
-
     }
 
     // Get methods
@@ -47,15 +44,15 @@ public class Patient {
         return patientDOB;
     }
 
-    public Image getImage48hr() {
+    public BufferedImage getImage48hr() {
         return image48hr;
     }
 
-    public Image getImage72hr() {
+    public BufferedImage getImage72hr() {
         return image72hr;
     }
 
-    public Image getImageBefore() {
+    public BufferedImage getImageBefore() {
         return imageBefore;
     }
 
@@ -76,15 +73,15 @@ public class Patient {
         this.patientDOB = patientDOB;
     }
 
-    public void setImage48hr(Image image48hr) {
+    public void setImage48hr(BufferedImage image48hr) {
         this.image48hr = image48hr;
     }
 
-    public void setImage72hr(Image image72hr) {
+    public void setImage72hr(BufferedImage image72hr) {
         this.image72hr = image72hr;
     }
 
-    public void setImageBefore(Image imageBefore) {
+    public void setImageBefore(BufferedImage imageBefore) {
         this.imageBefore = imageBefore;
     }
 }

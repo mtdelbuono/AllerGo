@@ -1,16 +1,32 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class PopUp {
-    Image image1, image2, image3;
-
+public class PopUp implements ActionListener, ChangeListener {
+    BufferedImage image1, image2, image3;
+    JSlider red1, red2, red3, blue1, blue2, blue3, green1, green2, green3;
+//temp:
+    BufferedImage img;
     /*
         This class needs a lot of work
         - add all of the images
         - finish the last two pop up windows
      */
 
-    protected static void recolor(/*Image image1, Image image2, Image image3*/){
+    public PopUp(Patient p){
+        image1 = p.getImageBefore();
+        image2 = p.getImage48hr();
+        image3 = p.getImage72hr();
+    }
+
+    protected void recolor(){// figure what to take in
        /*
        @Todo
         1. Set frame to exit on save, cancel, close.
@@ -106,41 +122,51 @@ public class PopUp {
         blueref3.setBounds(109, 242, 51, 10);
         imgpanel3.add(blueref3);
 
-        JSlider red1 = new JSlider(-255,255);
+        red1 = new JSlider(-255,255);
         red1.setBounds(40, 287, 130, 26);
         frmManualRecoloring.getContentPane().add(red1);
-
-        JSlider green1 = new JSlider(-255,255);
+        green1 = new JSlider(-255,255);
         green1.setBounds(40, 323, 130, 26);
         frmManualRecoloring.getContentPane().add(green1);
 
-        JSlider blue1 = new JSlider(-255,255);
+        blue1 = new JSlider(-255,255);
         blue1.setBounds(40, 362, 130, 26);
         frmManualRecoloring.getContentPane().add(blue1);
 
-        JSlider blue2 = new JSlider(-255,255);
+        blue2 = new JSlider(-255,255);
         blue2.setBounds(180, 362, 160, 26);
         frmManualRecoloring.getContentPane().add(blue2);
 
-        JSlider green2 = new JSlider(-255,255);
+        green2 = new JSlider(-255,255);
         green2.setBounds(180, 323, 160, 26);
         frmManualRecoloring.getContentPane().add(green2);
 
-        JSlider red2 = new JSlider(-255,255);
+         red2 = new JSlider(-255,255);
         red2.setBounds(180, 287, 160, 26);
         frmManualRecoloring.getContentPane().add(red2);
 
-        JSlider blue3 = new JSlider(-255,255);
+        blue3 = new JSlider(-255,255);
         blue3.setBounds(350, 361, 160, 26);
         frmManualRecoloring.getContentPane().add(blue3);
 
-        JSlider green3 = new JSlider(-255,255);
+        green3 = new JSlider(-255,255);
         green3.setBounds(350, 322, 160, 26);
         frmManualRecoloring.getContentPane().add(green3);
 
-        JSlider red3 = new JSlider(-255,255);
+        red3 = new JSlider(-255,255);
         red3.setBounds(350, 286, 160, 26);
         frmManualRecoloring.getContentPane().add(red3);
+
+        //should consider making these fuckers an arraylist and iterating but nah
+        red1.addChangeListener(this);
+        red2.addChangeListener(this);
+        red3.addChangeListener(this);
+        green1.addChangeListener(this);
+        green2.addChangeListener(this);
+        green3.addChangeListener(this);
+        blue1.addChangeListener(this);
+        blue2.addChangeListener(this);
+        blue3.addChangeListener(this);
 
         JLabel redLabel1 = new JLabel("Red");
         redLabel1.setBounds(10, 287, 45, 13);
@@ -166,21 +192,57 @@ public class PopUp {
         lblBlue.setBounds(10, 359, 45, 13);
         frmManualRecoloring.getContentPane().add(lblBlue);
 
+
+        //TEMPORARY VERY TEMPORARY
+        img = null;
+
+        try
+        {
+            img = ImageIO.read(new File("C:\\Users\\milan\\IdeaProjects\\AllerGo\\images\\hand.jpg")); // eventually C:\\ImageTest\\pic2.jpg
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        img.setRGB(1,2,100);
+
+        JLabel picture = new JLabel(new ImageIcon(img));
+        photoholder1.add(picture);
+
         frmManualRecoloring.setVisible(true);
     }
 
-    protected static void resize(Image image1, Image image2, Image image3) {
+    protected void resize(Image image1, Image image2, Image image3) {
         /*
         @Todo
          Fill in entire method
          */
     }
 
-    protected static void crop(Image image1, Image image2, Image image3) {
+    protected void crop(Image image1, Image image2, Image image3) {
         /*
         @Todo
          Fill in entire method
          */
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        //check which image manipulated and change color.
+        if(e.getSource().equals(red1) || e.getSource().equals(blue1) || e.getSource().equals(green1)){
+            ImageOps.recolor(red1.getValue(), green1.getValue(), blue1.getValue(), img);//temporarily img
+        }
+        if(e.getSource().equals(red2) || e.getSource().equals(blue2) || e.getSource().equals(green2)){
+            ImageOps.recolor(red2.getValue(), green2.getValue(), blue2.getValue(), image2);
+        }
+        if(e.getSource().equals(red3) || e.getSource().equals(blue3) || e.getSource().equals(green3)){
+            ImageOps.recolor(red3.getValue(), green3.getValue(), blue3.getValue(), image3);
+        }
+
+    }
 }
