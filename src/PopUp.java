@@ -8,44 +8,45 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PopUp implements ActionListener, ChangeListener {
     BufferedImage image1, image2, image3;
+    JPanel photoholder1, photoholder2, photoholder3;
+    JLabel picture1, picture2, picture3;
     JSlider red1, red2, red3, blue1, blue2, blue3, green1, green2, green3;
+    JFrame frmManualRecoloring;
+    JButton saveRecolor, cancelRecolor;
 //temp:
     BufferedImage img;
+
     /*
         This class needs a lot of work
         - add all of the images
         - finish the last two pop up windows
      */
 
-    public PopUp(Patient p){
-        image1 = p.getImageBefore();
-        image2 = p.getImage48hr();
-        image3 = p.getImage72hr();
+    public PopUp(BufferedImage i1, BufferedImage i2, BufferedImage i3){
+        image1 = i1;
+        image2 = i2;
+        image3 = i3;
     }
 
-    protected void recolor(){// figure what to take in
-       /*
-       @Todo
-        1. Set frame to exit on save, cancel, close.
-        2. Figure out sliderlisteners and make the RescaleOp for the sliders. (ChangeListener + ImageOp)
-        3. Figure out how to populate said images. For next commit just add some random 3.
-        */
-        JFrame frmManualRecoloring = new JFrame("Manual Image Recolor");
+    protected void recolor(){
+        frmManualRecoloring = new JFrame("Manual Image Recolor");
         frmManualRecoloring.setSize(600, 500);
-        frmManualRecoloring.setTitle("Manual Recoloring");
         frmManualRecoloring.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frmManualRecoloring.getContentPane().setLayout(null);
 
-        JButton save = new JButton("Save");
-        save.setBounds(478, 397, 85, 21);
-        frmManualRecoloring.getContentPane().add(save);
+        saveRecolor = new JButton("Save");
+        saveRecolor.setBounds(478, 397, 85, 21);
+        saveRecolor.addActionListener(this);
+        frmManualRecoloring.getContentPane().add(saveRecolor);
 
-        JButton cancel = new JButton("Cancel");
-        cancel.setBounds(387, 397, 85, 21);
-        frmManualRecoloring.getContentPane().add(cancel);
+        cancelRecolor = new JButton("Cancel");
+        cancelRecolor.setBounds(387, 397, 85, 21);
+        cancelRecolor.addActionListener(this);
+        frmManualRecoloring.getContentPane().add(cancelRecolor);
 
         JPanel imgpanel1 = new JPanel();
         imgpanel1.setBounds(10, 25, 160, 252);
@@ -62,10 +63,13 @@ public class PopUp implements ActionListener, ChangeListener {
         greenref1.setBounds(54, 242, 57, 10);
         imgpanel1.add(greenref1);
 
-        JPanel photoholder1 = new JPanel();
+        photoholder1 = new JPanel();
         photoholder1.setBackground(new Color(192, 192, 192));
         photoholder1.setBounds(0, 10, 160, 222);
         imgpanel1.add(photoholder1);
+
+        picture1 = new JLabel(new ImageIcon(image1));
+        photoholder1.add(picture1);
 
         JPanel blueref1 = new JPanel();
         blueref1.setBackground(new Color(0, 128, 255));
@@ -87,10 +91,13 @@ public class PopUp implements ActionListener, ChangeListener {
         redref2.setBounds(0, 242, 57, 10);
         imgpanel2.add(redref2);
 
-        JPanel photoholder2 = new JPanel();
+        photoholder2 = new JPanel();
         photoholder2.setBackground(new Color(192, 192, 192));
         photoholder2.setBounds(0, 10, 160, 222);
         imgpanel2.add(photoholder2);
+
+        picture2 = new JLabel(new ImageIcon(image2));
+        photoholder2.add(picture2);
 
         JPanel blueref2 = new JPanel();
         blueref2.setBackground(new Color(0, 128, 255));
@@ -102,10 +109,13 @@ public class PopUp implements ActionListener, ChangeListener {
         frmManualRecoloring.getContentPane().add(imgpanel3);
         imgpanel3.setLayout(null);
 
-        JPanel photoholder3 = new JPanel();
+        photoholder3 = new JPanel();
         photoholder3.setBackground(new Color(192, 192, 192));
         photoholder3.setBounds(0, 10, 160, 222);
         imgpanel3.add(photoholder3);
+
+        picture3 = new JLabel(new ImageIcon(image3));
+        photoholder3.add(picture3);
 
         JPanel redref3 = new JPanel();
         redref3.setBackground(Color.RED);
@@ -122,38 +132,51 @@ public class PopUp implements ActionListener, ChangeListener {
         blueref3.setBounds(109, 242, 51, 10);
         imgpanel3.add(blueref3);
 
-        red1 = new JSlider(-255,255);
+        //limits each slider to -255,255 range, init. at 0
+        BoundedRangeModel slider = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider1 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider2 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider3 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider4 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider5 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider6 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider7 = new DefaultBoundedRangeModel(0,1,-255,255);
+        BoundedRangeModel slider8 = new DefaultBoundedRangeModel(0,1,-255,255);
+
+
+        red1 = new JSlider(slider);
         red1.setBounds(40, 287, 130, 26);
         frmManualRecoloring.getContentPane().add(red1);
-        green1 = new JSlider(-255,255);
+
+        green1 = new JSlider(slider1);
         green1.setBounds(40, 323, 130, 26);
         frmManualRecoloring.getContentPane().add(green1);
 
-        blue1 = new JSlider(-255,255);
+        blue1 = new JSlider(slider2);
         blue1.setBounds(40, 362, 130, 26);
         frmManualRecoloring.getContentPane().add(blue1);
 
-        blue2 = new JSlider(-255,255);
+        blue2 = new JSlider(slider3);
         blue2.setBounds(180, 362, 160, 26);
         frmManualRecoloring.getContentPane().add(blue2);
 
-        green2 = new JSlider(-255,255);
+        green2 = new JSlider(slider4);
         green2.setBounds(180, 323, 160, 26);
         frmManualRecoloring.getContentPane().add(green2);
 
-         red2 = new JSlider(-255,255);
+         red2 = new JSlider(slider5);
         red2.setBounds(180, 287, 160, 26);
         frmManualRecoloring.getContentPane().add(red2);
 
-        blue3 = new JSlider(-255,255);
+        blue3 = new JSlider(slider6);
         blue3.setBounds(350, 361, 160, 26);
         frmManualRecoloring.getContentPane().add(blue3);
 
-        green3 = new JSlider(-255,255);
+        green3 = new JSlider(slider7);
         green3.setBounds(350, 322, 160, 26);
         frmManualRecoloring.getContentPane().add(green3);
 
-        red3 = new JSlider(-255,255);
+        red3 = new JSlider(slider8);
         red3.setBounds(350, 286, 160, 26);
         frmManualRecoloring.getContentPane().add(red3);
 
@@ -192,23 +215,6 @@ public class PopUp implements ActionListener, ChangeListener {
         lblBlue.setBounds(10, 359, 45, 13);
         frmManualRecoloring.getContentPane().add(lblBlue);
 
-
-        //TEMPORARY VERY TEMPORARY
-        img = null;
-
-        try
-        {
-            img = ImageIO.read(new File("C:\\Users\\milan\\IdeaProjects\\AllerGo\\images\\hand.jpg")); // eventually C:\\ImageTest\\pic2.jpg
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        img.setRGB(1,2,100);
-
-        JLabel picture = new JLabel(new ImageIcon(img));
-        photoholder1.add(picture);
-
         frmManualRecoloring.setVisible(true);
     }
 
@@ -226,23 +232,57 @@ public class PopUp implements ActionListener, ChangeListener {
          */
     }
 
+    public void export(){
+       //use setters in GUIForm to change the images loaded in to this class
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(saveRecolor)){
+            //set the class images
+            //do it here
 
+            //invoke export to send the 3 redone images back to the original GUIform class
+            export();
+            frmManualRecoloring.dispose();
+        }
+        if(e.getSource().equals(cancelRecolor)){
+            frmManualRecoloring.dispose();
+        }
     }
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        //check which image manipulated and change color.
+        //check which image manipulated and change color. RECOLOR SECTION
         if(e.getSource().equals(red1) || e.getSource().equals(blue1) || e.getSource().equals(green1)){
-            ImageOps.recolor(red1.getValue(), green1.getValue(), blue1.getValue(), img);//temporarily img
+            try {
+                //run the other overloaded recolor method
+                BufferedImage imageNew = ImageOps.recolor(red1.getValue(), green1.getValue(), blue1.getValue(), image1);//keep as img
+                //set the JLabel to have the new updated image, but do not change the original images img.
+                picture1.setIcon(new ImageIcon(imageNew));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         if(e.getSource().equals(red2) || e.getSource().equals(blue2) || e.getSource().equals(green2)){
-            ImageOps.recolor(red2.getValue(), green2.getValue(), blue2.getValue(), image2);
+            try {
+                BufferedImage imageNew = ImageOps.recolor(red2.getValue(), green2.getValue(), blue2.getValue(), image2);
+                picture2.setIcon(new ImageIcon(imageNew));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         if(e.getSource().equals(red3) || e.getSource().equals(blue3) || e.getSource().equals(green3)){
-            ImageOps.recolor(red3.getValue(), green3.getValue(), blue3.getValue(), image3);
+            try {
+                BufferedImage imageNew = ImageOps.recolor(red3.getValue(), green3.getValue(), blue3.getValue(), image3);
+                picture3.setIcon(new ImageIcon(imageNew));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
+
+
+
 
     }
 }

@@ -31,12 +31,13 @@ public class GUIform implements ActionListener{
     JMenuItem m1, m2, m3;
     JButton exportOK, openOK, newPatientButton, loadOK, newPatientOK;
     JButton color;
+    BufferedImage image, image2, image3;
     ChangeListener sliderListener;
 
 
     //temporary for testing
     Patient pt = new Patient("test", "test", "000000" , "00/00/0000");
-
+    //will put this into the constructor along with the other stuff.
 
 
 
@@ -52,6 +53,8 @@ public class GUIform implements ActionListener{
     }
 
     public GUIform() throws IOException {
+        //create patient
+
         frame = new JFrame("Image Processing Tool");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 700);
@@ -320,9 +323,15 @@ public class GUIform implements ActionListener{
       if(a.getSource().equals(color)){
           //pull the color.
 
-          //temporarily:
+          try {
+              image = ImageIO.read(new File("C:\\Users\\milan\\IdeaProjects\\AllerGo\\images\\hand.jpg"));
+              image2 = ImageIO.read(new File("C:\\Users\\milan\\IdeaProjects\\AllerGo\\images\\hand2.jpg"));
+              image3 = ImageIO.read(new File("C:\\Users\\milan\\IdeaProjects\\AllerGo\\images\\hand3.jpg"));
 
-          PopUp p = new PopUp(pt);
+          } catch (IOException e) {
+              throw new RuntimeException(e);
+          }
+          PopUp p = new PopUp(image, image2, image3);
           p.recolor();
         }
       

@@ -1,48 +1,88 @@
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
+import java.awt.image.RescaleOp;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class ImageOps {
+
     //keep these static because the class is what matters... no need for a fake object
-    public static void recolor(float r, float g, float b, BufferedImage im){//void for now, later BI
-        int height = im.getHeight();
-        int width = im.getWidth();
-       // BufferedImage dest = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-        int[] row = null;
-
-        for (int y = 0; y < height; y++) {
-            // I copy a full row of pixels at a time, for slightly better performance
-            row = im.getRGB(0, y, width, 1, row, 0, width);
-
-            for (int x = 0; x < width; x++) {
-                int A = row[x] & 0xFF000000; // Just copy the alpha as-is
-
-                int rNew = (row[x] >> 16) & 0xFF;
-                int gNew = (row[x] >> 8) & 0xFF;
-                int bNew = (row[x]) & 0xFF;
-
-                // As you can see, a simple addition will increase/decrease
-                // the channel values, just make sure you keep them in the
-                // [0...255] range.
-                int R = (int) max(min(rNew + r, 255), 0);
-                int G = (int) max(min(gNew + g, 255), 0);
-                int B = (int) max(min(bNew + b, 255), 0);
-
-                row[x] = A | R << 16 | G << 8 | B;
-                System.out.println(row[x]);
-            }
-
-            // And copy the entire row back (temporarily no copy)
-           // dest.setRGB(0, y, width, 1, row, 0, width);
-            im.setRGB(0,y,width,1,row,0, width);
-        }
-
-      //  return dest;
-
+    public static BufferedImage recolor(float r, float g, float b, BufferedImage im) throws IOException {
+        final BufferedImageOp op = new RescaleOp(new float[] { 1, 1, 1 }, new float[] { r, g, b }, null);
+            BufferedImage result = op.filter(im, null);
+            return result;
     }
 
     //public BufferedImage crop(BufferedImage im){/*no idea what to ad here*/}
 
+    //this be temp.
+    /*
+    public static void main(final String[] args) throws IOException {
+        BufferedImage image = ImageIO.read(new File("C:\\Users\\milan\\IdeaProjects\\AllerGo\\images\\hand.jpg"));
+
+        SwingUtilities.invokeLater(() -> {
+            JLabel imageLabel = new JLabel(new ImageIcon(image));
+
+            BoundedRangeModel red = new DefaultBoundedRangeModel(0, 1, -255, 255);
+            BoundedRangeModel green = new DefaultBoundedRangeModel(0, 1, -255, 255);
+            BoundedRangeModel blue = new DefaultBoundedRangeModel(0, 1, -255, 255);
+
+            ChangeListener sliderListener = e -> new SwingWorker<BufferedImage, BufferedImage>() {
+                final BufferedImageOp op = new RescaleOp(new float[] { 1, 1, 1 }, new float[] { red.getValue(), green.getValue(), blue.getValue() }, null);
+
+                /*@Override protected BufferedImage doInBackground() {
+                    BufferedImage result = op.filter(image, null);
+                    publish(result);
+                    imageLabel.setIcon(new ImageIcon(result));
+                    return result;
+                }
+
+
+
+                //@Override protected void process(List<BufferedImage> chunks) {
+                    //imageLabel.setIcon(new ImageIcon(chunks.get(0)));
+               // }
+            }.execute();
+
+            red.addChangeListener(sliderListener);
+            green.addChangeListener(sliderListener);
+            blue.addChangeListener(sliderListener);
+
+            JSlider redSlider = new JSlider(red);
+            JSlider greenSlider = new JSlider(green);
+            JSlider blueSlider = new JSlider(blue);
+
+            JPanel sliders = new JPanel();
+            sliders.add(redSlider);
+            sliders.add(greenSlider);
+            sliders.add(blueSlider);
+
+            JPanel main = new JPanel(new BorderLayout());
+            main.add(imageLabel);
+            main.add(sliders, BorderLayout.SOUTH);
+
+            JFrame test = new JFrame("Test");
+            test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            test.getContentPane().add(main);
+            test.pack();
+            test.setLocationRelativeTo(null);
+
+            test.setVisible(true);
+        });
+    }
+
+     */
 }
